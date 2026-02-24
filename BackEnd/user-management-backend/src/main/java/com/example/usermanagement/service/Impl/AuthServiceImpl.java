@@ -68,7 +68,7 @@ public class AuthServiceImpl implements AuthService {
 
         // Direct password comparison (plain text)
         if (!request.getPassword().equals(user.getPassword())) {
-            throw new BadRequestException("Invalid username or password");
+            throw new BadRequestException("Invalid username or pwd");
         }
 
         if (!Boolean.TRUE.equals(user.getActive())) {

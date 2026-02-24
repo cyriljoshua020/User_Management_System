@@ -11,7 +11,6 @@ public class UpdateUserRequest {
     @NotBlank
     @Email
     private String email;
-
     private Boolean active;
 
     public UpdateUserRequest() {
