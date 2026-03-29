@@ -1,0 +1,32 @@
+<div class="profile-container" *ngIf="currentUser as user">
+    <h2>User Profile</h2>
+
+    <div class="info-box">
+        <div><strong>Username:</strong> {{ user.username }}</div>
+        <div><strong>Role:</strong> {{ user.role }}</div>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="save()" class="profile-form">
+        <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" formControlName="fullName" />
+            <div class="error" *ngIf="form.controls['fullName'].invalid && form.controls['fullName'].touched">
+                Full name is required
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" formControlName="email" />
+            <div class="error" *ngIf="form.controls['email'].invalid && form.controls['email'].touched">
+                Valid email is required
+            </div>
+        </div>
+
+        <button class="btn primary" type="submit">Save</button>
+    </form>
+</div>
+
+<div *ngIf="!currentUser">
+    <p>No user logged in.</p>
+</div>

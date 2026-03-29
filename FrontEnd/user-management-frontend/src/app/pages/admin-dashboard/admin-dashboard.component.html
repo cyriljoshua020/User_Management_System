@@ -1,0 +1,394 @@
+<div class="admin-page">
+    <!--  TOP BAR  -->
+    <header class="page-header">
+        <h2>Admin Dashboard</h2>
+
+        <!-- Add User button on right -->
+        <button class="btn primary" (click)="toggleAddUserForm()">
+            Add User
+        </button>
+    </header>
+
+    <!--  ADD USER (ADMIN)  -->
+    <section *ngIf="showAddUserForm" class="card">
+        <h3>Add User (by Admin)</h3>
+
+        <form [formGroup]="addUserForm" (ngSubmit)="submitAddUser()">
+            <div class="form-grid">
+                <div class="form-control">
+                    <label>Username</label>
+                    <input type="text" formControlName="username" />
+                    <div class="error-msg" *ngIf="hasAddUserError('username','required')">
+                        Username is required
+                    </div>
+                    <div class="error-msg" *ngIf="hasAddUserError('username','minlength')">
+                        Username must be at least 3 characters
+                    </div>
+                </div>
+
+                <!-- ADD USER – Password -->
+                <div class="form-control">
+                    <label>Password</label>
+
+                    <div class="password-wrapper">
+                        <input [type]="showAddUserPassword ? 'text' : 'password'" formControlName="password" />
+                        <button type="button" class="eye-btn" (click)="toggleAddUserPassword()">
+                            {{ showAddUserPassword ? 'Hide' : 'Show' }}
+                        </button>
+                    </div>
+
+                    <div class="error-msg" *ngIf="hasAddUserError('password','required')">
+                        Password is required
+                    </div>
+
+                    <div class="error-msg" *ngIf="hasAddUserError('password','minlength')">
+                        Password must be at least 4 characters
+                    </div>
+                </div>
+
+                <div class="form-control">
+                    <label>Full Name</label>
+                    <input type="text" formControlName="fullName" />
+                    <div class="error-msg" *ngIf="hasAddUserError('fullName','required')">
+                        Full name is required
+                    </div>
+                    <div class="error-msg" *ngIf="hasAddUserError('fullName','minlength')">
+                        Full name must be at least 3 characters
+                    </div>
+                </div>
+
+                <div class="form-control">
+                    <label>Email</label>
+                    <input type="email" formControlName="email" />
+                    <div class="error-msg" *ngIf="hasAddUserError('email','required')">
+                        Email is required
+                    </div>
+                    <div class="error-msg" *ngIf="hasAddUserError('email','email')">
+                        Please enter a valid email address
+                    </div>
+                </div>
+
+                <div class="form-control">
+                    <label>Admin Secret (optional)</label>
+                    <input type="text" formControlName="adminSecret" />
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn primary">Create User</button>
+                <button type="button" class="btn" (click)="toggleAddUserForm()">
+                    Close
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <!--  USERS TABLE + SEARCH  -->
+    <section class="card">
+        <header class="card-header">
+            <h3>All Users</h3>
+        </header>
+
+        <!-- Search bar -->
+        <form [formGroup]="searchForm" class="search-bar">
+            <div class="form-control small">
+                <label>Search by User ID</label>
+                <input type="number" formControlName="userId" placeholder="e.g. 1" />
+            </div>
+
+            <div class="form-control small">
+                <label>Search by Username</label>
+                <input type="text" formControlName="username" placeholder="e.g. Santhosh" />
+            </div>
+
+            <div class="search-actions">
+                <button type="button" class="btn" (click)="clearSearch()">
+                    Clear
+                </button>
+            </div>
+        </form>
+
+        <div class="table-wrapper">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Active</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <!-- Use usersToDisplay instead of users directly -->
+                    <tr *ngFor="let user of usersToDisplay">
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.fullName }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.role }}</td>
+                        <td>{{ user.active ? 'Yes' : 'No' }}</td>
+                        <td>
+                            <button class="btn small" (click)="startEdit(user)">Edit</button>
+                            <button class="btn small" (click)="promoteToAdmin(user)" [disabled]="user.role === 'ADMIN'">
+                                Promote
+                            </button>
+                            <button class="btn small danger" (click)="deleteUser(user)">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!--  EDIT USER FORM  -->
+    <section *ngIf="selectedUser" class="card">
+        <h3>Edit User: {{ selectedUser.username }}</h3>
+
+        <form [formGroup]="editForm" (ngSubmit)="saveEdit()">
+            <div class="form-grid">
+                <div class="form-control">
+                    <label>Full Name</label>
+                    <input type="text" formControlName="fullName" />
+                </div>
+
+                <div class="form-control">
+                    <label>Email</label>
+                    <input type="email" formControlName="email" />
+                </div>
+
+                <div class="form-control">
+                    <label>Active</label>
+                    <select formControlName="active">
+                        <option [value]="true">Active</option>
+                        <option [value]="false">Inactive</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn primary">Save</button>
+                <button type="button" class="btn" (click)="cancelEdit()">Cancel</button>
+            </div>
+        </form>
+    </section>
+
+    <!--  AUDIT LOGS SUMMARY  -->
+    <section class="card">
+        <header class="card-header">
+            <h3>Recent Audit Logs (Top 5)</h3>
+
+            <button class="btn" (click)="goToAuditPage()">
+                Open Full Audit Log Page
+            </button>
+        </header>
+
+        <div class="table-wrapper">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Performed By</th>
+                        <th>Action</th>
+                        <th>Details</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let log of logs | slice: 0:5; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ log.performedBy }}</td>
+                        <td>{{ log.action }}</td>
+                        <td>{{ log.details }}</td>
+                        <td>{{ log.timestamp | date: 'medium' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+<!--  INLINE STYLES FOR ADMIN DASHBOARD  -->
+<style>
+    .admin-page {
+        padding: 24px;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .card {
+        background: #f9fafb;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 16px;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 600px;
+    }
+
+    .table th,
+    .table td {
+        padding: 8px 10px;
+        border-bottom: 1px solid #e5e7eb;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .table th {
+        background: #e5e7eb;
+        font-weight: 600;
+    }
+
+    .btn {
+        padding: 6px 12px;
+        border-radius: 4px;
+        border: 1px solid #d1d5db;
+        background: #f3f4f6;
+        cursor: pointer;
+        font-size: 13px;
+    }
+
+    .btn.primary {
+        background: #2563eb;
+        border-color: #2563eb;
+        color: #fff;
+    }
+
+    .btn.small {
+        font-size: 12px;
+        padding: 4px 8px;
+        margin-right: 4px;
+    }
+
+    .btn.danger {
+        background: #dc2626;
+        border-color: #dc2626;
+        color: #fff;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 12px;
+    }
+
+    .form-control {
+        display: flex;
+        flex-direction: column;
+        font-size: 14px;
+    }
+
+    .form-control label {
+        margin-bottom: 4px;
+        font-weight: 500;
+    }
+
+    .form-control input,
+    .form-control select {
+        padding: 6px 8px;
+        border-radius: 4px;
+        border: 1px solid #d1d5db;
+    }
+
+    .form-actions {
+        margin-top: 12px;
+        display: flex;
+        gap: 8px;
+    }
+
+    .error-msg {
+        color: #b91c1c;
+        font-size: 12px;
+        margin-top: 2px;
+    }
+
+    .search-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: flex-end;
+        margin-bottom: 12px;
+    }
+
+    .form-control.small {
+        max-width: 200px;
+    }
+
+    .search-actions {
+        display: flex;
+        align-items: center;
+    }
+
+    /* PASSWORD FIELD – SAME AS LOGIN PAGE */
+    .password-wrapper {
+        position: relative;
+        width: 100%;
+    }
+
+    .password-wrapper input {
+        width: 100%;
+        padding-right: 60px;
+        /* space for Show/Hide text */
+        box-sizing: border-box;
+    }
+
+    .eye-btn {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 13px;
+        color: #2563eb;
+        padding: 0;
+    }
+
+    /* Make tables mobile-friendly below ~940px wide */
+    @media (max-width: 940px) {
+        .table {
+            min-width: 0;
+            /* allow table to shrink */
+            font-size: 12px;
+        }
+
+        .table th,
+        .table td {
+            white-space: normal;
+            /* allow text to wrap */
+        }
+
+        .page-header h2 {
+            font-size: 20px;
+        }
+    }
+</style>

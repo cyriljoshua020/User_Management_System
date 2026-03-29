@@ -1,0 +1,18 @@
+<div class="app-container">
+    <header class="app-header">
+        <div class="logo">User Management System</div>
+
+        <div class="user-info" *ngIf="(currentUser$ | async) as user; else guest">
+            <span class="welcome">Welcome, {{ user.fullName }} ({{ user.role }})</span>
+            <button class="btn btn-outline" (click)="logout()">Logout</button>
+        </div>
+
+        <ng-template #guest>
+            <span class="welcome">Please login or sign up</span>
+        </ng-template>
+    </header>
+
+    <main class="app-main">
+        <router-outlet></router-outlet>
+    </main>
+</div>

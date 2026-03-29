@@ -1,0 +1,119 @@
+<div class="audit-page">
+    <section class="card">
+        <header class="card-header">
+            <h2>Audit Logs</h2>
+            <a routerLink="/admin" class="btn">Back to Admin Dashboard</a>
+        </header>
+
+        <div *ngIf="highlightMessage" class="highlight-banner">
+            {{ highlightMessage }}
+        </div>
+
+        <div *ngIf="errorMessage" class="error">
+            {{ errorMessage }}
+        </div>
+
+        <div class="table-wrapper">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Performed By</th>
+                        <th>Action</th>
+                        <th>Details</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let log of logs; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ log.performedBy }}</td>
+                        <td>{{ log.action }}</td>
+                        <td>{{ log.details }}</td>
+                        <td>{{ log.timestamp | date: 'medium' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+<!-- INLINE STYLES FOR AUDIT PAGE -->
+<style>
+    .audit-page {
+        padding: 24px;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .card {
+        background: #f9fafb;
+        border-radius: 8px;
+        padding: 16px;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .btn {
+        padding: 6px 12px;
+        border-radius: 4px;
+        border: 1px solid #d1d5db;
+        background: #f3f4f6;
+        cursor: pointer;
+        font-size: 13px;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .highlight-banner {
+        padding: 10px 12px;
+        margin: 12px 0;
+        background: #ecfeff;
+        border: 1px solid #06b6d4;
+        color: #0f172a;
+        border-radius: 6px;
+        font-weight: 500;
+    }
+
+    .error {
+        color: #b91c1c;
+        margin-bottom: 8px;
+    }
+
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 600px;
+    }
+
+    .table th,
+    .table td {
+        padding: 8px 10px;
+        border-bottom: 1px solid #e5e7eb;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .table th {
+        background: #e5e7eb;
+        font-weight: 600;
+    }
+
+    @media (max-width: 640px) {
+        .table {
+            min-width: 0;
+            font-size: 12px;
+        }
+    }
+</style>

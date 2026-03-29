@@ -1,0 +1,147 @@
+.admin-dashboard {
+    padding: 24px;
+}
+
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.card {
+    background: #f9fafb;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+}
+
+.table th,
+.table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.table th {
+    background: #e5e7eb;
+    font-weight: 600;
+}
+
+.btn {
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: 1px solid #d1d5db;
+    background: #f3f4f6;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.btn.primary {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #fff;
+}
+
+.btn.small {
+    font-size: 12px;
+    padding: 4px 8px;
+    margin-right: 4px;
+}
+
+.btn.danger {
+    background: #dc2626;
+    border-color: #dc2626;
+    color: #fff;
+}
+
+.form-card {
+    background: #ffffff;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+}
+
+.form-control {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+}
+
+.form-control label {
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.form-control input,
+.form-control select {
+    padding: 6px 8px;
+    border-radius: 4px;
+    border: 1px solid #d1d5db;
+}
+
+.form-actions {
+    margin-top: 12px;
+    display: flex;
+    gap: 8px;
+}
+
+/* Small screens */
+@media (max-width: 640px) {
+    .table {
+        min-width: 0;
+        font-size: 12px;
+    }
+
+    .toolbar h2 {
+        font-size: 20px;
+    }
+}
+
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-wrapper input {
+    width: 100%;
+    padding-right: 60%;
+    /* space for Show/Hide text */
+    box-sizing: border-box;
+}
+
+.eye-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    color: #2563eb;
+    padding: 0;
+}
